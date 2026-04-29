@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Orders — The Modern Archive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>tailwind.config={theme:{extend:{fontFamily:{display:['Newsreader','serif'],body:['Public Sans','sans-serif']}}}}</script>
+</head>
+<body class="bg-[#f8f9ff] text-[#0d1c2e] font-body flex flex-col min-h-screen">
+
+<header class="bg-white border-b border-[#c6c6cd] sticky top-0 z-50 shadow-sm">
+  <div class="max-w-[1280px] mx-auto px-6 py-3 flex items-center justify-between gap-4">
+    <a th:href="@{/catalog}" class="font-display text-xl font-semibold shrink-0">The Modern Archive</a>
+    <nav class="hidden md:flex items-center gap-1 text-sm">
+      <a th:href="@{/catalog}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors">Catalog</a>
+      <a th:href="@{/my-orders}" class="px-3 py-1.5 rounded-md bg-[#eff4ff] text-[#0d1c2e] font-medium">My Orders</a>
+      <a th:href="@{/privacy}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors hidden lg:block">Privacy</a>
+      <a th:href="@{/terms}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors hidden lg:block">Terms</a>
+      <a th:href="@{/contact}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors hidden lg:block">Contact</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a th:href="@{/cart}" class="relative p-2 hover:bg-[#eff4ff] rounded-md transition-colors">
+        <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+        <span th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"
+              class="absolute -top-0.5 -right-0.5 bg-black text-white text-[10px] font-semibold rounded-full min-w-[16px] h-4 flex items-center justify-center px-0.5 leading-none"></span>
+      </a>
+      <div class="flex items-center gap-1.5 pl-1">
+        <span class="material-symbols-outlined text-[22px] text-[#45464d]">account_circle</span>
+        <span class="text-sm font-medium hidden sm:block" th:text="${session.user.name}">User</span>
+        <a th:href="@{/logout}" class="text-xs text-[#76777d] hover:text-[#ba1a1a] transition-colors ml-1">Logout</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow max-w-[1280px] mx-auto px-6 py-10 w-full">
+  <div class="flex items-center gap-3 mb-8">
+    <a th:href="@{/catalog}" class="text-[#45464d] hover:text-[#0d1c2e] transition-colors">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <h1 class="font-display text-4xl font-semibold">My Orders</h1>
+  </div>
+
+  <!-- Empty state -->
+  <div th:if="${orders.isEmpty()}" class="text-center py-20 text-[#45464d]">
+    <span class="material-symbols-outlined text-5xl mb-4 block">receipt_long</span>
+    <p class="text-lg font-medium">No orders yet</p>
+    <p class="text-sm mt-1">Start browsing and place your first order.</p>
+    <a th:href="@{/catalog}" class="mt-4 inline-block px-6 py-2.5 bg-black text-white rounded font-medium hover:bg-[#1a1a1a] transition-colors">Browse Catalog</a>
+  </div>
+
+  <!-- Orders table -->
+  <div th:if="${!orders.isEmpty()}" class="bg-white border border-[#c6c6cd] rounded-lg overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-[#eff4ff]">
+        <tr>
+          <th class="py-4 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Order #</th>
+          <th class="py-4 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Date</th>
+          <th class="py-4 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider hidden md:table-cell">Items</th>
+          <th class="py-4 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Total</th>
+          <th class="py-4 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Status</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[#c6c6cd]">
+        <tr th:each="order : ${orders}" class="hover:bg-[#f8f9ff] transition-colors">
+          <td class="py-4 px-6 font-medium" th:text="'#' + ${order.id}"></td>
+          <td class="py-4 px-6 text-sm text-[#45464d]"
+              th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}">Date</td>
+          <td class="py-4 px-6 text-sm text-[#45464d] hidden md:table-cell"
+              th:text="${order.orderItems != null ? order.orderItems.size() + ' item(s)' : '-'}">-</td>
+          <td class="py-4 px-6 font-medium"
+              th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}">$0.00</td>
+          <td class="py-4 px-6">
+            <span class="inline-flex items-center gap-1.5 text-sm">
+              <span class="w-2 h-2 rounded-full"
+                    th:classappend="${order.status.name() == 'CONFIRMED' or order.status.name() == 'SHIPPED'} ? 'bg-green-500' : (${order.status.name() == 'CANCELLED'} ? 'bg-red-500' : 'bg-yellow-500')"></span>
+              <span th:text="${order.status}">PENDING</span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="bg-[#e6eeff] border-t border-[#c6c6cd] mt-auto">
+  <div class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-[#45464d]">
+    <p class="font-display text-base font-medium text-[#0d1c2e]">The Modern Archive</p>
+    <div class="flex gap-5">
+      <a th:href="@{/privacy}" class="hover:text-[#0d1c2e] transition-colors">Privacy Policy</a>
+      <a th:href="@{/terms}" class="hover:text-[#0d1c2e] transition-colors">Terms</a>
+      <a th:href="@{/contact}" class="hover:text-[#0d1c2e] transition-colors">Contact</a>
+    </div>
+    <p>&copy; 2026 The Modern Archive.</p>
+  </div>
+</footer>
+</body>
+</html>

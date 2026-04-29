@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — The Modern Archive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>tailwind.config={theme:{extend:{fontFamily:{display:['Newsreader','serif'],body:['Public Sans','sans-serif']}}}}</script>
+</head>
+<body class="bg-[#f8f9ff] text-[#0d1c2e] font-body flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-56 bg-[#0d1c2e] text-white flex flex-col shrink-0 min-h-screen">
+  <div class="px-6 py-5 border-b border-[#233144]">
+    <p class="font-display text-base font-semibold">The Modern Archive</p>
+    <p class="text-xs text-[#7c839b] mt-0.5">Admin Panel</p>
+  </div>
+  <nav class="flex-1 px-3 py-4 space-y-1">
+    <a th:href="@{/admin/dashboard}" class="flex items-center gap-3 px-3 py-2 rounded text-sm bg-[#233144] text-white">
+      <span class="material-symbols-outlined text-base">dashboard</span> Dashboard
+    </a>
+    <a th:href="@{/admin/books}" class="flex items-center gap-3 px-3 py-2 rounded text-sm text-[#bec6e0] hover:bg-[#233144] transition-colors">
+      <span class="material-symbols-outlined text-base">menu_book</span> Books
+    </a>
+    <a th:href="@{/admin/orders}" class="flex items-center gap-3 px-3 py-2 rounded text-sm text-[#bec6e0] hover:bg-[#233144] transition-colors">
+      <span class="material-symbols-outlined text-base">receipt_long</span> Orders
+    </a>
+  </nav>
+  <div class="px-3 py-4 border-t border-[#233144]">
+    <a th:href="@{/admin/logout}" class="flex items-center gap-3 px-3 py-2 rounded text-sm text-[#bec6e0] hover:bg-[#233144] transition-colors">
+      <span class="material-symbols-outlined text-base">logout</span> Logout
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="flex-1 flex flex-col">
+  <header class="bg-white border-b border-[#c6c6cd] px-8 py-4 flex items-center justify-between">
+    <h1 class="font-display text-xl font-medium">Dashboard</h1>
+    <span class="text-sm text-[#45464d]">Welcome, <span th:text="${session.admin.username}" class="font-medium text-[#0d1c2e]">Admin</span></span>
+  </header>
+
+  <main class="flex-1 px-8 py-8">
+
+    <!-- Flash messages -->
+    <div th:if="${success}" class="mb-6 p-3 bg-green-50 border border-green-200 rounded text-sm text-green-800 flex items-center gap-2">
+      <span class="material-symbols-outlined text-base">check_circle</span><span th:text="${success}"></span>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-5">
+        <div class="flex items-center gap-2 text-[#45464d] mb-3">
+          <span class="material-symbols-outlined text-base">menu_book</span>
+          <span class="text-xs font-medium uppercase tracking-wider">Total Books</span>
+        </div>
+        <p class="font-display text-3xl font-semibold" th:text="${totalBooks}">0</p>
+      </div>
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-5">
+        <div class="flex items-center gap-2 text-[#45464d] mb-3">
+          <span class="material-symbols-outlined text-base">receipt_long</span>
+          <span class="text-xs font-medium uppercase tracking-wider">Total Orders</span>
+        </div>
+        <p class="font-display text-3xl font-semibold" th:text="${totalOrders}">0</p>
+      </div>
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-5">
+        <div class="flex items-center gap-2 text-[#45464d] mb-3">
+          <span class="material-symbols-outlined text-base">warning</span>
+          <span class="text-xs font-medium uppercase tracking-wider">Low Stock</span>
+        </div>
+        <p class="font-display text-3xl font-semibold" th:classappend="${lowStockCount > 0} ? 'text-orange-500'" th:text="${lowStockCount}">0</p>
+      </div>
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-5">
+        <div class="flex items-center gap-2 text-[#45464d] mb-3">
+          <span class="material-symbols-outlined text-base">payments</span>
+          <span class="text-xs font-medium uppercase tracking-wider">Inventory Value</span>
+        </div>
+        <p class="font-display text-3xl font-semibold" th:text="'$' + ${#numbers.formatDecimal(inventoryValue, 1, 0)}">$0</p>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="flex gap-3 mb-8">
+      <a th:href="@{/admin/books/add}" class="px-5 py-2.5 bg-black text-white rounded font-medium hover:bg-[#1a1a1a] transition-colors flex items-center gap-2 text-sm">
+        <span class="material-symbols-outlined text-base">add</span> Add Book
+      </a>
+      <a th:href="@{/admin/books}" class="px-5 py-2.5 border border-[#c6c6cd] rounded font-medium hover:bg-[#eff4ff] transition-colors flex items-center gap-2 text-sm text-[#45464d]">
+        <span class="material-symbols-outlined text-base">menu_book</span> Manage Books
+      </a>
+      <a th:href="@{/admin/orders}" class="px-5 py-2.5 border border-[#c6c6cd] rounded font-medium hover:bg-[#eff4ff] transition-colors flex items-center gap-2 text-sm text-[#45464d]">
+        <span class="material-symbols-outlined text-base">receipt_long</span> View Orders
+      </a>
+    </div>
+
+    <!-- Recent orders -->
+    <div class="bg-white border border-[#c6c6cd] rounded-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-[#c6c6cd] flex items-center justify-between">
+        <h2 class="font-display text-lg font-medium">Recent Orders</h2>
+        <a th:href="@{/admin/orders}" class="text-sm text-[#45464d] hover:text-[#0d1c2e] transition-colors">View all</a>
+      </div>
+      <div th:if="${recentOrders.isEmpty()}" class="px-6 py-8 text-center text-sm text-[#45464d]">No orders yet.</div>
+      <table th:if="${!recentOrders.isEmpty()}" class="w-full">
+        <thead class="bg-[#eff4ff]">
+          <tr>
+            <th class="py-3 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Order #</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider hidden md:table-cell">Customer</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Total</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider">Status</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold text-[#45464d] uppercase tracking-wider hidden lg:table-cell">Date</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#c6c6cd]">
+          <tr th:each="order : ${recentOrders}" class="hover:bg-[#f8f9ff] transition-colors">
+            <td class="py-3 px-6 font-medium text-sm" th:text="'#' + ${order.id}"></td>
+            <td class="py-3 px-6 text-sm text-[#45464d] hidden md:table-cell" th:text="${order.user.name}">Name</td>
+            <td class="py-3 px-6 text-sm font-medium" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}">$0.00</td>
+            <td class="py-3 px-6">
+              <span class="inline-flex items-center gap-1.5 text-xs">
+                <span class="w-1.5 h-1.5 rounded-full"
+                      th:classappend="${order.status.name() == 'CONFIRMED' or order.status.name() == 'SHIPPED'} ? 'bg-green-500' : (${order.status.name() == 'CANCELLED'} ? 'bg-red-500' : 'bg-yellow-500')"></span>
+                <span th:text="${order.status}">PENDING</span>
+              </span>
+            </td>
+            <td class="py-3 px-6 text-sm text-[#45464d] hidden lg:table-cell"
+                th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}">Date</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body>
+</html>

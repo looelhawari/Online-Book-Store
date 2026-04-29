@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${pageTitle != null ? pageTitle + ' — The Modern Archive' : 'The Modern Archive'}">The Modern Archive</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <!-- Custom styles -->
+  <link th:href="@{/css/style.css}" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { display: ['Newsreader','serif'], body: ['Public Sans','sans-serif'] },
+          colors: {
+            primary: '#000000',
+            surface: '#f8f9ff',
+            'surface-low': '#eff4ff',
+            'surface-container': '#e6eeff',
+            'on-surface': '#0d1c2e',
+            'on-surface-variant': '#45464d',
+            outline: '#76777d',
+            'outline-variant': '#c6c6cd',
+            error: '#ba1a1a',
+            'error-container': '#ffdad6',
+          },
+          spacing: { gutter: '24px', 'stack-sm': '4px', 'stack-md': '16px', 'stack-lg': '40px' },
+          maxWidth: { container: '1280px' }
+        }
+      }
+    }
+  </script>
+</head>
+<body th:fragment="body(content)" class="bg-surface text-on-surface font-body flex flex-col min-h-screen">
+
+  <!-- NAVBAR -->
+  <header class="bg-white border-b border-outline-variant sticky top-0 z-50">
+    <div class="max-w-container mx-auto px-gutter py-3 flex items-center justify-between">
+      <a th:href="@{/catalog}" class="font-display text-xl font-semibold tracking-tight">The Modern Archive</a>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-on-surface-variant">
+        <a th:href="@{/catalog}" class="hover:text-on-surface transition-colors">Catalog</a>
+        <a th:href="@{/catalog(category='Fiction')}" class="hover:text-on-surface transition-colors">Fiction</a>
+        <a th:href="@{/catalog(category='Design Theory')}" class="hover:text-on-surface transition-colors">Design</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a th:href="@{/cart}" class="relative p-2 hover:bg-surface-low rounded transition-colors">
+          <span class="material-symbols-outlined text-xl">shopping_cart</span>
+          <span th:if="${cartCount != null and cartCount > 0}"
+                th:text="${cartCount}"
+                class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center"></span>
+        </a>
+        <a th:if="${session.user == null}" th:href="@{/login}"
+           class="px-4 py-1.5 border border-outline-variant rounded text-sm font-medium hover:bg-surface-low transition-colors">Sign in</a>
+        <div th:if="${session.user != null}" class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-on-surface-variant">account_circle</span>
+          <span class="text-sm hidden sm:block" th:text="${session.user.name}">User</span>
+          <a th:href="@{/logout}" class="text-sm text-on-surface-variant hover:text-error transition-colors ml-1">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FLASH MESSAGES -->
+  <div th:if="${success}" class="bg-green-50 border-b border-green-200 px-gutter py-3 text-sm text-green-800 flex items-center gap-2">
+    <span class="material-symbols-outlined text-base">check_circle</span>
+    <span th:text="${success}"></span>
+  </div>
+  <div th:if="${error}" class="bg-error-container border-b border-red-200 px-gutter py-3 text-sm text-error flex items-center gap-2">
+    <span class="material-symbols-outlined text-base">error</span>
+    <span th:text="${error}"></span>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow">
+    <div th:replace="${content}"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-surface-container border-t border-outline-variant mt-auto">
+    <div class="max-w-container mx-auto px-gutter py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-on-surface-variant">
+      <p class="font-display text-base font-medium text-on-surface">The Modern Archive</p>
+      <div class="flex gap-6">
+        <a th:href="@{/privacy}" class="hover:text-on-surface transition-colors">Privacy Policy</a>
+        <a th:href="@{/terms}" class="hover:text-on-surface transition-colors">Terms of Service</a>
+        <a th:href="@{/contact}" class="hover:text-on-surface transition-colors">Contact Us</a>
+      </div>
+      <p>&copy; 2026 The Modern Archive. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

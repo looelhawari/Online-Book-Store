@@ -1,0 +1,83 @@
+/* ============================================================
+   The Modern Archive — Custom Styles
+   Supplements Tailwind CSS with design-system refinements
+   ============================================================ */
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap');
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Public Sans', sans-serif;
+  color: #0d1c2e;
+  background-color: #f8f9ff;
+}
+
+/* Typography helpers */
+.font-display { font-family: 'Newsreader', serif; }
+
+/* Material symbols */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Smooth transitions */
+a, button { transition: all 150ms ease; }
+
+/* Book card hover lift */
+.book-card:hover {
+  box-shadow: 0 4px 16px rgba(13, 28, 46, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Focus ring on form inputs */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 1px #000;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f8f9ff; }
+::-webkit-scrollbar-thumb { background: #c6c6cd; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #76777d; }
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Table row hover */
+tr:hover td { background-color: rgba(239, 244, 255, 0.5); }
+
+/* Button reset */
+button { cursor: pointer; }
+
+/* Disabled state */
+.disabled, [disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Flash message animation */
+.flash-message {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Star rating */
+.star-filled { color: #f59e0b; }
+.star-empty  { color: #c6c6cd; }

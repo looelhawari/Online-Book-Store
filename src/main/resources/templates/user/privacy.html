@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy — The Modern Archive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ['Newsreader','serif'], body: ['Public Sans','sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f8f9ff] text-[#0d1c2e] min-h-screen flex flex-col" style="font-family:'Public Sans',sans-serif">
+<header class="bg-white border-b border-[#c6c6cd] sticky top-0 z-50 shadow-sm">
+  <div class="max-w-[1280px] mx-auto px-6 h-14 flex items-center justify-between gap-4">
+    <a th:href="@{/catalog}" class="text-lg font-semibold shrink-0" style="font-family:'Newsreader',serif">The Modern Archive</a>
+    <nav class="hidden md:flex items-center gap-1 text-sm">
+      <a th:href="@{/catalog}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors">Catalog</a>
+      <a th:if="${session.user != null}" th:href="@{/my-orders}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors">My Orders</a>
+      <a th:href="@{/privacy}" class="px-3 py-1.5 rounded-md bg-[#eff4ff] text-[#0d1c2e] font-medium">Privacy</a>
+      <a th:href="@{/terms}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors">Terms</a>
+      <a th:href="@{/contact}" class="px-3 py-1.5 rounded-md text-[#45464d] hover:bg-[#eff4ff] hover:text-[#0d1c2e] transition-colors">Contact</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a th:href="@{/cart}" class="relative p-2 hover:bg-[#eff4ff] rounded-md transition-colors">
+        <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+        <span th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"
+              class="absolute -top-0.5 -right-0.5 bg-black text-white text-[10px] font-semibold rounded-full min-w-[16px] h-4 flex items-center justify-center px-0.5 leading-none"></span>
+      </a>
+      <a th:if="${session.user == null}" th:href="@{/login}" class="px-3 py-1.5 border border-[#c6c6cd] rounded-md text-sm font-medium hover:bg-[#eff4ff] transition-colors">Sign In</a>
+      <div th:if="${session.user != null}" class="flex items-center gap-1.5 pl-1">
+        <span class="material-symbols-outlined text-[22px] text-[#45464d]">account_circle</span>
+        <span class="text-sm font-medium hidden sm:block" th:text="${session.user.name}">User</span>
+        <a th:href="@{/logout}" class="text-xs text-[#76777d] hover:text-[#ba1a1a] transition-colors ml-1">Logout</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow max-w-[960px] mx-auto px-6 py-10 w-full">
+  <h1 class="text-[38px] font-semibold mb-2" style="font-family:'Newsreader',serif">Privacy Policy</h1>
+  <p class="text-sm text-[#45464d] mb-8">Last updated: April 2026</p>
+
+  <div class="space-y-6 text-sm leading-7 text-[#233144]">
+    <section class="bg-white border border-[#c6c6cd] rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-2" style="font-family:'Newsreader',serif">1. Information We Collect</h2>
+      <p>We collect account details (name, email, username), order history, and cart data required to provide bookstore services.</p>
+    </section>
+    <section class="bg-white border border-[#c6c6cd] rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-2" style="font-family:'Newsreader',serif">2. How We Use Information</h2>
+      <p>Your information is used to authenticate your account, process orders, show purchase history, and improve catalog recommendations.</p>
+    </section>
+    <section class="bg-white border border-[#c6c6cd] rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-2" style="font-family:'Newsreader',serif">3. Security</h2>
+      <p>We apply reasonable technical and organizational safeguards to protect your personal data from unauthorized access or misuse.</p>
+    </section>
+    <section class="bg-white border border-[#c6c6cd] rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-2" style="font-family:'Newsreader',serif">4. Data Retention</h2>
+      <p>We keep account and transaction records while your account is active and as needed for operational and legal requirements.</p>
+    </section>
+    <section class="bg-white border border-[#c6c6cd] rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-2" style="font-family:'Newsreader',serif">5. Contact</h2>
+      <p>For privacy questions, please contact us at <a th:href="@{/contact}" class="underline hover:text-[#0d1c2e]">our contact page</a>.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="bg-[#e6eeff] border-t border-[#c6c6cd] mt-auto">
+  <div class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-[#45464d]">
+    <p class="font-semibold text-[#0d1c2e]" style="font-family:'Newsreader',serif">The Modern Archive</p>
+    <div class="flex gap-5">
+      <a th:href="@{/privacy}" class="hover:text-[#0d1c2e] transition-colors">Privacy Policy</a>
+      <a th:href="@{/terms}" class="hover:text-[#0d1c2e] transition-colors">Terms</a>
+      <a th:href="@{/contact}" class="hover:text-[#0d1c2e] transition-colors">Contact</a>
+    </div>
+    <p>&copy; 2026 The Modern Archive.</p>
+  </div>
+</footer>
+</body>
+</html>

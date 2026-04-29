@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Portal — The Modern Archive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>tailwind.config={theme:{extend:{fontFamily:{display:['Newsreader','serif'],body:['Public Sans','sans-serif']}}}}</script>
+</head>
+<body class="bg-[#0d1c2e] text-white font-body min-h-screen flex items-center justify-center px-4">
+
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <span class="material-symbols-outlined text-4xl text-[#bec6e0]">lock</span>
+      <h1 class="font-display text-2xl font-semibold mt-2">Admin Portal</h1>
+      <p class="text-sm text-[#7c839b] mt-1">The Modern Archive</p>
+    </div>
+
+    <div class="bg-[#131b2e] border border-[#3f465c] rounded-lg p-8">
+      <div th:if="${error}" class="mb-4 p-3 bg-[#ffdad6] border border-red-300 rounded text-sm text-[#ba1a1a] flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">error</span>
+        <span th:text="${error}"></span>
+      </div>
+
+      <form th:action="@{/admin/login}" method="post" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-[#bec6e0] mb-1">Username</label>
+          <input id="username" name="username" type="text" required th:value="${username}"
+                 placeholder="Admin username"
+                 class="w-full px-4 py-2.5 bg-[#0d1c2e] border border-[#3f465c] rounded text-white placeholder-[#7c839b] focus:outline-none focus:border-[#bec6e0] focus:ring-1 focus:ring-[#bec6e0] transition-colors"/>
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-[#bec6e0] mb-1">Password</label>
+          <input id="password" name="password" type="password" required
+                 placeholder="Admin password"
+                 class="w-full px-4 py-2.5 bg-[#0d1c2e] border border-[#3f465c] rounded text-white placeholder-[#7c839b] focus:outline-none focus:border-[#bec6e0] focus:ring-1 focus:ring-[#bec6e0] transition-colors"/>
+        </div>
+        <button type="submit"
+                class="w-full bg-white text-[#0d1c2e] py-2.5 rounded font-medium hover:bg-[#bec6e0] transition-colors">
+          Sign In
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center mt-4 text-sm text-[#7c839b]">
+      <a th:href="@{/login}" class="hover:text-white transition-colors">← Back to user login</a>
+    </p>
+  </div>
+</body>
+</html>

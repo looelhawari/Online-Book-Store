@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — The Modern Archive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>tailwind.config={theme:{extend:{fontFamily:{display:['Newsreader','serif'],body:['Public Sans','sans-serif']}}}}</script>
+</head>
+<body class="bg-[#f8f9ff] text-[#0d1c2e] font-body flex flex-col min-h-screen">
+
+<header class="bg-white border-b border-[#c6c6cd] sticky top-0 z-50 shadow-sm">
+  <div class="max-w-[1280px] mx-auto px-6 py-3 flex items-center justify-between gap-4">
+    <a th:href="@{/catalog}" class="font-display text-xl font-semibold shrink-0">The Modern Archive</a>
+    <!-- Progress steps -->
+    <div class="hidden sm:flex items-center gap-2 text-xs text-[#45464d]">
+      <span class="flex items-center gap-1"><span class="w-5 h-5 rounded-full bg-[#0d1c2e] text-white flex items-center justify-center text-xs">✓</span> Cart</span>
+      <span class="text-[#c6c6cd]">—</span>
+      <span class="flex items-center gap-1 font-semibold text-[#0d1c2e]"><span class="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs">2</span> Checkout</span>
+      <span class="text-[#c6c6cd]">—</span>
+      <span class="flex items-center gap-1"><span class="w-5 h-5 rounded-full border border-[#c6c6cd] flex items-center justify-center text-xs">3</span> Payment</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <a th:href="@{/privacy}" class="text-xs text-[#45464d] hover:text-[#0d1c2e] hidden lg:block">Privacy</a>
+      <a th:href="@{/terms}" class="text-xs text-[#45464d] hover:text-[#0d1c2e] hidden lg:block">Terms</a>
+      <a th:href="@{/contact}" class="text-xs text-[#45464d] hover:text-[#0d1c2e] hidden lg:block">Contact</a>
+      <div class="flex items-center gap-1.5 pl-1">
+        <span class="material-symbols-outlined text-[20px] text-[#45464d]">account_circle</span>
+        <span class="text-sm font-medium hidden md:block" th:text="${session.user.name}">User</span>
+      </div>
+      <a th:href="@{/logout}" class="text-xs text-[#76777d] hover:text-[#ba1a1a] transition-colors hidden md:block">Logout</a>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow max-w-[1280px] mx-auto px-6 py-10 w-full">
+
+  <div th:if="${error}" class="mb-6 p-3 bg-[#ffdad6] border border-red-200 rounded text-sm text-[#ba1a1a] flex items-center gap-2">
+    <span class="material-symbols-outlined text-base">error</span><span th:text="${error}"></span>
+  </div>
+
+  <div class="flex items-center gap-3 mb-8">
+    <a th:href="@{/cart}" class="text-[#45464d] hover:text-[#0d1c2e] transition-colors">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <h1 class="font-display text-4xl font-semibold">Checkout</h1>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <!-- Order review -->
+    <div class="lg:col-span-2">
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-6 mb-6">
+        <h2 class="font-display text-xl font-medium mb-4">Order Review</h2>
+        <div class="divide-y divide-[#c6c6cd]">
+          <div th:each="item : ${cartItems}" class="py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-12 bg-[#e6eeff] rounded flex-shrink-0 flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg text-[#45464d]">menu_book</span>
+              </div>
+              <div class="min-w-0">
+                <p class="font-medium text-sm truncate" th:text="${item.book.title}">Title</p>
+                <p class="text-xs text-[#45464d]">Qty: <span th:text="${item.quantity}">1</span></p>
+              </div>
+            </div>
+            <p class="font-medium flex-shrink-0"
+               th:text="'$' + ${#numbers.formatDecimal(item.book.price.doubleValue() * item.quantity, 1, 2)}">$0.00</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping info (display only — no real shipping in this demo) -->
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-6">
+        <h2 class="font-display text-xl font-medium mb-4">Delivery Information</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Full Name</label>
+            <input type="text" th:value="${session.user.name}" readonly
+                   class="w-full px-4 py-2.5 border border-[#c6c6cd] rounded bg-[#f8f9ff] text-[#45464d]"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" th:value="${session.user.email}" readonly
+                   class="w-full px-4 py-2.5 border border-[#c6c6cd] rounded bg-[#f8f9ff] text-[#45464d]"/>
+          </div>
+          <div class="p-3 bg-[#eff4ff] rounded text-sm text-[#45464d] flex items-start gap-2">
+            <span class="material-symbols-outlined text-base mt-0.5">info</span>
+            <span>This is a demo application. No real shipping is processed.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div>
+      <div class="bg-white border border-[#c6c6cd] rounded-lg p-6 sticky top-24">
+        <h2 class="font-display text-xl font-medium mb-4">Summary</h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-[#45464d]">Subtotal</span>
+            <span th:text="'$' + ${#numbers.formatDecimal(subtotal, 1, 2)}">$0.00</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[#45464d]">Tax (8%)</span>
+            <span th:text="'$' + ${#numbers.formatDecimal(tax, 1, 2)}">$0.00</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[#45464d]">Shipping</span>
+            <span class="text-green-600 font-medium">Free</span>
+          </div>
+          <div class="border-t border-[#c6c6cd] pt-2 mt-2 flex justify-between font-semibold text-base">
+            <span>Total</span>
+            <span th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">$0.00</span>
+          </div>
+        </div>
+        <form th:action="@{/checkout}" method="post">
+          <button type="submit"
+                  class="mt-6 w-full py-3 bg-black text-white rounded font-medium hover:bg-[#1a1a1a] transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-base">payment</span>
+            Proceed to Payment
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-[#e6eeff] border-t border-[#c6c6cd] mt-auto">
+  <div class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-[#45464d]">
+    <p class="font-display text-base font-medium text-[#0d1c2e]">The Modern Archive</p>
+    <div class="flex gap-5">
+      <a th:href="@{/privacy}" class="hover:text-[#0d1c2e] transition-colors">Privacy Policy</a>
+      <a th:href="@{/terms}" class="hover:text-[#0d1c2e] transition-colors">Terms</a>
+      <a th:href="@{/contact}" class="hover:text-[#0d1c2e] transition-colors">Contact</a>
+    </div>
+    <p>&copy; 2026 The Modern Archive.</p>
+  </div>
+</footer>
+</body>
+</html>
